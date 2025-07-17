@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>A+ BBHC</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.bounce-in {
+  animation: bounceIn 0.6s ease-out;
+}
+@keyframes bounceIn {
+  0% { transform: scale(0.3); }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+</style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+<div class="bg-white p-4 md:p-6 flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-6 shadow-sm select-none mb-4">
+  <img
+    src="{{ url_for('static', filename='OIP.png') }}"
+    alt="College Logo"
+    class="h-20 w-20 object-contain mx-auto md:mx-0"
+  />
+
+  <div class="flex-1 text-center md:text-left">
+    <h1 class="text-xl md:text-2xl font-bold text-[#6b1111]">
+      Dr. B. B. Hegde First Grade College, Kundapura
+    </h1>
+    <hr class="border-t-4 border-gray-800 my-1 w-full">
+    <p class="text-sm md:text-base text-gray-600 mt-1">
+      A Unit of Coondapur Education Society (R)
+    </p>
+  </div>
+</div>
+
+<a href="/search_statistics"
+   class="inline-flex items-center gap-2 px-5 py-3 rounded-xl shadow-md bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-semibold transition-transform transform ml-1 ">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M11 19V6m-4 13v-4m8 4V10m4 9V4" />
+  </svg>
+  <span>Books Statistics</span>
+</a>
+
+
+
+<div class="max-w-7xl mx-auto px-4">
+ <div class="text-center mb-4 fade-in">
+  <h1 class="text-3xl font-bold text-gray-800">
+    Book Transactions
+  </h1>
+  <p class="text-gray-500 text-sm mt-1 tracking-wide">
+    Issued & Returned Books
+  </p>
+</div>
+
+
+
+
+  <div class="flex flex-col md:flex-row items-center gap-4 mb-4 fade-in">
+    <a href="/issue-book"
+      class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-5 rounded-lg transition-all duration-300 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+      </svg>
+      Issue Book
+    </a>
+
+    <a href="{{ url_for('all_books') }}"
+      class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-5 rounded-lg transition-all duration-300 flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+  <path stroke-linecap="round" stroke-linejoin="round"
+        d="M3.75 6.75c2.25-1.25 5.25-1.25 7.5 0v10.5c-2.25-1.25-5.25-1.25-7.5 0V6.75zm16.5 0c-2.25-1.25-5.25-1.25-7.5 0v10.5c2.25-1.25 5.25-1.25 7.5 0V6.75z"/>
+</svg>
+
+
+
+      
+      All Books
+    </a>
+
+    <!-- SEARCH BAR -->
+    <div class="flex flex-1 relative">
+      <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none animate-pulse">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/>
+        </svg>
+      </span>
+      <input id="searchInput" type="text" placeholder="Search..."
+        class="flex-1 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <select id="statusFilter" onchange="filterByStatus()"
+      class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <option value="">All Status</option>
+      <option value="Issued">Issued</option>
+      <option value="Returned">Returned</option>
+    </select>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-lg overflow-hidden fade-in">
+    <div class="overflow-x-auto w-full select-none cursor-grab active:cursor-grabbing" id="tableContainer">
+      <table class="w-full">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="px-4 py-3 text-left">S.No</th>
+            <th class="px-4 py-3 text-left">Student Name</th>
+            <th class="px-4 py-3 text-left">Roll No</th>
+            <th class="px-4 py-3 text-left">Class</th>
+            <th class="px-4 py-3 text-left">Book Title</th>
+            <th class="px-4 py-3 text-left">Author</th>
+            <th class="px-4 py-3 text-left capitalize">Department Name</th>
+            <th class="px-4 py-3 text-left">Department Code</th>
+            <th class="px-4 py-3 text-left">Barcode</th>
+            <th class="px-4 py-3 text-left">Issued Date</th>
+            <th class="px-4 py-3 text-left">Status</th>
+            <th class="px-4 py-3 text-left">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          {% for book in Books_history %}
+          <tr class="hover:bg-gray-50 transition-all duration-200 text-xs">
+            <td class="px-4 py-3 text-left">{{ loop.index }}</td>
+            <td class="px-4 py-3 text-left">{{ book.student.studentName }}</td>
+            <td class="px-4 py-3 text-left">{{ book.student.rollno }}</td>
+            <td class="px-4 py-3 text-left">{{ book.student.section }} [{{ book.student.year }}]</td>
+            <td class="px-4 py-3 text-left">{{ book.book.title }}</td>
+            <td class="px-4 py-3 text-left">{{ book.book.author }}</td>
+            <td class="px-4 py-3 text-left ">{{ book.book.department }}</td>
+            <td class="px-4 py-3 text-left">{{ book.book.department_code }}</td>
+            <td class="px-4 py-3 text-left">{{ book.book.barcode }}</td>
+            <td class="px-4 py-3 text-left">{{ book.issued_at }}</td>
+            <td class="px-4 py-3 text-left">
+              <span class="px-2 py-1 rounded-full text-xs font-bold {% if book.status|lower == 'returned' %} bg-green-100 text-green-800 {% else %} bg-yellow-100 text-yellow-800 {% endif %}">
+                {{ book.status | capitalize }}
+              </span>
+            </td>
+            <td class="px-4 py-3 text-left">
+              {% if book.status|lower == 'issued' %}
+              <a href="{{ url_for('return_book',id=book._id) }}" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg transition-all duration-300 transform hover:scale-105 text-sm focus:cursor-pointer">
+                Return
+              </a>
+              {% else %}
+              <div class="relative group inline-block">
+                <span class="text-green-600 font-bold text-xs cursor-pointer">Returned at: {{ book.returned_at }}</span>
+               
+              </div>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('tableContainer');
+
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  container.addEventListener('mousedown', (e) => {
+    isDown = true;
+    container.classList.add('active');
+    startX = e.pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
+  });
+
+  container.addEventListener('mouseleave', () => {
+    isDown = false;
+    container.classList.remove('active');
+  });
+
+  container.addEventListener('mouseup', () => {
+    isDown = false;
+    container.classList.remove('active');
+  });
+
+  container.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    container.scrollLeft = scrollLeft - walk;
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const rows = Array.from(document.querySelectorAll("#tableBody tr"));
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+
+    function filterTable() {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      const statusTerm = statusFilter.value.trim().toLowerCase();
+
+      let hasVisible = false;
+
+      rows.forEach((row) => {
+        const cells = row.querySelectorAll("td");
+        const status = row.querySelector("td:nth-child(11) span")?.textContent.trim().toLowerCase() || "";
+
+        // Check if any cell includes the search term
+        const matchesSearch = !searchTerm || Array.from(cells).some(cell => {
+          return cell.textContent.toLowerCase().includes(searchTerm);
+        });
+
+        const matchesStatus = !statusTerm || status === statusTerm;
+
+        if (matchesSearch && matchesStatus) {
+          row.style.display = "";
+          hasVisible = true;
+        } else {
+          row.style.display = "none";
+        }
+      });
+
+      const noRecord = document.getElementById("no-record");
+
+      if (!hasVisible) {
+        if (!noRecord) {
+          const tr = document.createElement("tr");
+          tr.id = "no-record";
+          tr.innerHTML = `<td colspan="12" class="text-center text-gray-500 py-4">No records found.</td>`;
+          document.getElementById("tableBody").appendChild(tr);
+        }
+      } else {
+        if (noRecord) noRecord.remove();
+      }
+    }
+
+    searchInput.addEventListener("input", filterTable);
+    statusFilter.addEventListener("change", filterTable);
+  });
+</script>
+</body>
+</html>

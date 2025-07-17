@@ -1,0 +1,19 @@
+BBHCCHE - chemistry
+BBHCCOM - commerce
+BBHCCOMP - competitive exam
+BBHCCSC - computer science
+BBHCDIC - dictionary
+BBHCECO - economics
+BBHCENC - encyclopedia
+BBHCENG - english
+BBHCGEN - general science
+BBHCHIN - hindi
+BBHCKAN - kannada
+BBHCMAN - management
+BBHCMAT - mathematics
+BBHCPHY - physical education
+BBHCPHYS - physics
+BBHCPOL - political science
+BBHCRES - reserch methodology
+BBHCSAN - sanskrit
+BBHCYEA - year book

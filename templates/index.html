@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Lookup</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        background: #f7f7f7;
+    }
+    .college-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background: #fff;
+        padding: 20px 10px 10px 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .college-header-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    .college-logo {
+        height: 80px;
+        margin-right: 20px;
+    }
+
+    .container {
+        background: #fff;
+        max-width: 500px;
+        margin: 40px auto;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        padding: 40px 30px 30px 30px;
+    }
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    h1 {
+        color: #333;
+        margin: 0;
+    }
+    form {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+    input[type="text"] {
+        padding: 10px 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        width: 220px;
+    }
+    button {
+        padding: 10px 25px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    button:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+    .result, .error {
+        margin-top: 20px;
+        padding: 18px;
+        border-radius: 10px;
+        font-size: 1.1em;
+    }
+    .result {
+        background: #e6ffe6;
+        color: #222;
+        border-left: 5px solid #00b894;
+    }
+    .error {
+        background: #ffe6e6;
+        color: #d63031;
+        border-left: 5px solid #d63031;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+    th {
+        background: #f3f3f3;
+    }
+    .floating-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 14px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .floating-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+    .arrow {
+        display: inline-block;
+        margin-left: 4px;
+        transition: transform 0.3s ease;
+    }
+    .floating-button:hover .arrow {
+        transform: translateX(3px);
+    }
+</style>
+</head>
+<body>
+
+<div class="college-header">
+    <div class="college-header-row">
+        <img src="{{ url_for('static', filename='college_logo.png') }}" alt="College Logo" class="college-logo">
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="header-row">
+        <h1>Student</h1>
+        <a href="{{ url_for('home') }}" class="floating-button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9.75L12 4.5l9 5.25M4.5 10.5V19.5a.75.75 0 00.75.75H9V15h6v5.25h3.75a.75.75 0 00.75-.75V10.5" />
+            </svg>
+            Home
+        </a>
+    </div>
+
+    <form method="post">
+        <input type="text" name="rollno" placeholder="Enter Roll Number (e.g., BBA24001)" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if result %}
+        <div class="result">
+            <strong>Result for Roll Number: {{ result.rollno }}</strong>
+            <table>
+                <tr><th>Name</th><td>{{ result.studentName }}</td></tr>
+                <tr><th>Section</th><td>{{ result.section }}</td></tr>
+                <tr><th>Year</th><td>{{ result.year }}</td></tr>
+            </table>
+            <a href="{{ url_for('view_books',rollno=result.rollno) }}" class="floating-button">
+                Continue <span class="arrow">→</span>
+            </a>
+        </div>
+    {% elif error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+</div>
+
+</body>
+</html>

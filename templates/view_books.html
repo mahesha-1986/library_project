@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>View Books</title>
+
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet" />
+
+<style>
+  body {
+    font-family: "Roboto", Arial, sans-serif;
+  }
+</style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+  <!-- Header -->
+  <div class="bg-white p-4 flex flex-wrap items-center gap-4 shadow">
+    <img src="{{ url_for('static', filename='OIP.png') }}" alt="College Logo" class="h-20 w-20 object-contain">
+    <div class="flex-1">
+      <h1 class="text-2xl font-bold text-red-800">Dr. B. B. Hegde First Grade College, Kundapura</h1>
+      <hr class="border-t-2 border-gray-700 my-1">
+      <p class="text-sm text-gray-600">A Unit of Coondapur Education Society(R)</p>
+    </div>
+  </div>
+
+  <!-- Main container -->
+  <div class="max-w-5xl mx-auto mt-6 bg-white rounded-lg shadow p-6">
+    <!-- Search -->
+    <form method="get" action="{{ url_for('view_books') }}" class="flex flex-wrap gap-2 mb-4">
+      <input type="text" id="barcode" name="barcode" placeholder="Enter barcode..." required
+        class="flex-1 px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500" />
+      <button type="submit"
+        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded transition">Search</button>
+    </form>
+
+    <!-- Result -->
+    {% if barcode_result %}
+    <div class="mb-3 p-3 bg-blue-50 border-l-4 border-blue-500 rounded text-sm">
+      <strong>Book Found:</strong><br>
+      Accession Number: <b>{{ barcode_result.accession_number }}</b><br>
+      Title: <b>{{ barcode_result.title }}</b><br>
+      Department: <b>{{ barcode_result.department }}</b><br>
+      Author: <b>{{ barcode_result.author }}</b><br>
+      Department Code: <b>{{ barcode_result.department_code }}</b><br>
+      Barcode: <b>{{ barcode_result.barcode }}</b>
+    </div>
+
+    {% if already_issued %}
+    <div class="mb-3 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded text-sm">
+      ⚠️ This book is already issued to:
+      <b>{{ already_issued.student.studentName }}</b> |
+      Roll No: <b>{{ already_issued.student.rollno }}</b> |
+      Class: <b>{{ already_issued.student.section }}</b>
+    </div>
+    {% else %}
+    <div class="text-center my-2">
+      <a href="{{ url_for('Save_To_DB') }}"
+        class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-medium px-4 py-2 rounded shadow transform hover:scale-105 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+          stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 6c-2.25-1.5-4.75-1.5-7 0v12c2.25-1.5 4.75-1.5 7 0m0-12c2.25-1.5 4.75-1.5 7 0v7M17 17h4m-2-2v4" />
+        </svg>
+        Issue Book
+      </a>
+    </div>
+    {% endif %}
+
+    {% elif barcode_searched %}
+    <div class="mb-3 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded text-sm">
+      ❌ No book found for barcode: <b>{{ barcode_searched }}</b>
+    </div>
+    {% endif %}
+
+    
+    
+    </div>
+  </div>
+</body>
+</html>
