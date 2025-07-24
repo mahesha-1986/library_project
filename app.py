@@ -6,7 +6,7 @@ from bson import ObjectId
 from DB.connection import db
 from datetime import datetime
 # Uncomment this line if you want to import books from an Excel file, white initial setup of the application
-import services.import_books_from_excel 
+#import services.import_books_from_excel 
 from services import Read_DepartmentCodes
 
 
@@ -71,6 +71,9 @@ def search_statistics():
             if search_type == "department code":
                 query_value = query.upper()
                 search_type = "department_code"
+            elif search_type == "title":
+                query_value = query.upper()
+                search_type = "title"
             else:
                 query_value = query.title()
 
@@ -179,7 +182,7 @@ def index():
     result = None
     error = None
     if request.method == 'POST':
-        key = request.form.get('rollno', '').strip()
+        key = request.form.get('rollno', '').strip().upper()
         if key in student_data:
             result = {'rollno': key, **student_data[key]}
         else:
