@@ -1,0 +1,78 @@
+Connected to MongoDB
+APP Started
+ * Debug mode: off
+INFO:werkzeug:[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+INFO:werkzeug:[33mPress CTRL+C to quit[0m
+INFO:app:All issued books history loaded successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:31] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:31] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:31] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:41] "GET /all-books HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:41] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:app:All issued books history loaded successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:48] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:48] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:50] "GET /issue-book HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:50] "GET /static/college_logo.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:53] "POST /issue-book HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:53] "[36mGET /static/college_logo.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:54] "GET /view-books?rollno=BBA24063 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:54] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:58] "GET /view-books?barcode=BBHCCOM9935 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:17:58] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:01] "GET /view-books?barcode=BBHCMAN6 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:01] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:07] "GET /view-books?barcode=BBHCMAN63 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:07] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:14] "GET /view-books?barcode=BBHCMAN61 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:14] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:21] "GET /view-books?barcode=BBHCMAN7 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:21] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:app:Book issued successfully!
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:23] "[32mGET /Save HTTP/1.1[0m" 302 -
+INFO:app:All issued books history loaded successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:23] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:23] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:26] "GET /search_statistics HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:27] "GET /static/logo-removebg-preview.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:40] "GET /recommendation?type=Department%20Code&query=c HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:40] "GET /recommendation?type=Department%20Code&query=cy HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:47] "GET /recommendation?type=Title&query=cy HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:53] "GET /recommendation?type=Title&query=cyb HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:53] "GET /recommendation?type=Title&query=cybe HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:53] "GET /recommendation?type=Title&query=cyber HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:55] "GET /recommendation?type=Title&query=Cyber%20Security HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:58] "POST /search_statistics HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:18:58] "[36mGET /static/logo-removebg-preview.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:19:26] "GET /recommendation?type=Author&query=s HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:19:29] "POST /search_statistics HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:19:29] "[36mGET /static/logo-removebg-preview.png HTTP/1.1[0m" 304 -
+INFO:app:All issued books history loaded successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:19:38] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:19:38] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:app:Book with ID 6879355f211a1c772200d5c6 returned successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:19:59] "[32mGET /returned_books?id=6879355f211a1c772200d5c6 HTTP/1.1[0m" 302 -
+INFO:app:All issued books history loaded successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:19:59] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:19:59] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:app:Book with ID 688263d74c9678ce7ba719d0 returned successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:01] "[32mGET /returned_books?id=688263d74c9678ce7ba719d0 HTTP/1.1[0m" 302 -
+INFO:app:All issued books history loaded successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:01] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:01] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:app:Book with ID 68779b62311e27cc210513e5 returned successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:05] "[32mGET /returned_books?id=68779b62311e27cc210513e5 HTTP/1.1[0m" 302 -
+INFO:app:All issued books history loaded successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:05] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:05] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:app:Book with ID 68779acc311e27cc210513e4 returned successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:07] "[32mGET /returned_books?id=68779acc311e27cc210513e4 HTTP/1.1[0m" 302 -
+INFO:app:All issued books history loaded successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:07] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:08] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
+INFO:app:Book with ID 687639cf536f6f2a2df097c5 returned successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:10] "[32mGET /returned_books?id=687639cf536f6f2a2df097c5 HTTP/1.1[0m" 302 -
+INFO:app:All issued books history loaded successfully.
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:10] "GET / HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [24/Jul/2025 22:20:10] "[36mGET /static/OIP.png HTTP/1.1[0m" 304 -
