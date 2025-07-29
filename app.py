@@ -312,50 +312,17 @@ def lookup_barcode():
     book.pop('_id', None)
     return jsonify(book)
 
-# fetch('http://localhost:5000/delete-issued-book/64f9b1e4d1b9a7d8e9a3c123', {
-#     method: 'DELETE'
-# })
-# .then(response => response.json())
-# .then(data => console.log(data))
-# .catch(error => console.error(error));
-
-
-
-@app.route('/delete-issued-book/<string:book_id>', methods=['DELETE'])
-def delete_issued_book(book_id):
+@app.route('/delete_entry/<id>')
+def delete_entry(id):
     try:
-        # Attempt to delete by ObjectId
-        result = issued_books.delete_one({"_id": ObjectId(book_id)})
-
+        from bson import ObjectId
+        result = issued_books.delete_one({'_id': ObjectId(id)})
         if result.deleted_count == 0:
-            return jsonify({"message": "No record found with that ID"}), 404
-
-        return jsonify({"message": "Record deleted successfully"}), 200
-
+            return 'Entry not found', 404
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-
-# fetch('http://localhost:5000/clear-issued-books', {
-#     method: 'DELETE'
-# })
-# .then(response => response.json())
-# .then(data => console.log(data))
-# .catch(error => console.error(error));
-
-
-@app.route('/clear-issued-books', methods=['DELETE'])
-def clear_issued_books():
-    try:
-        result = issued_books.delete_many({})  # Delete all documents
-        return jsonify({
-            "message": "All records deleted successfully",
-            "deleted_count": result.deleted_count
-        }), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
+        logger.error(f"Error deleting entry with ID {id}: {e}")
+        return 'Error deleting entry', 500
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.debug = True
