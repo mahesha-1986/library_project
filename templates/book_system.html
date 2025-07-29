@@ -163,7 +163,7 @@ tr:hover .delete-icon { display: inline-block; }
                   </div>
                 {% endif %}
                 <!-- Dustbin Icon for Delete (only visible on row hover) -->
-                <img src="{{ url_for('static', filename='dustbin.png') }}" alt="Delete entry" title="Delete entry" class="delete-icon w-5 h-5" onclick="confirmDelete('{{ url_for('delete_entry', id=book._id) }}')" />
+                <img src="{{ url_for('static', filename='dustbin.png') }}" alt="Delete entry" title="Delete entry" class="delete-icon w-5 h-5 z-10" onclick="confirmDelete('{{ url_for('delete_entry', id=book._id) }}')" />
               </div>
             </td>
           </tr>
@@ -257,6 +257,7 @@ tr:hover .delete-icon { display: inline-block; }
   function confirmDelete(deleteUrl) {
     if (confirm('Are you sure you want to delete this entry?')) {
       window.location.href = deleteUrl;
+    
     }
   }
 </script>
