@@ -105,6 +105,11 @@ def search_statistics():
         return jsonify({"error": "Error processing search request"}), 500
     
 
+@app.route('/clear_history')
+def clear_history():
+    issued_books.delete_many({})  # Adjust collection name if different
+    flash('All book transaction history cleared successfully.', 'success')
+    return redirect(url_for('home'))  # Adjust this to your main page
 
 @app.route("/recommendation")
 def recommendation():

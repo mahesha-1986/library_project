@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Library(BBHC)\library_Mgt_BBHC\venv
+set VIRTUAL_ENV=C:\lib\library_Mgt_BBHC\venv
 
 if not defined PROMPT set PROMPT=$P$G
 
