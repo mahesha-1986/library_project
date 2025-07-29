@@ -312,6 +312,18 @@ def lookup_barcode():
     book.pop('_id', None)
     return jsonify(book)
 
+@app.route('/delete_entry/<id>')
+def delete_entry(id):
+    try:
+        from bson import ObjectId
+        result = issued_books.delete_one({'_id': ObjectId(id)})
+        if result.deleted_count == 0:
+            return 'Entry not found', 404
+    except Exception as e:
+        logger.error(f"Error deleting entry with ID {id}: {e}")
+        return 'Error deleting entry', 500
+    return redirect(url_for('home'))
+
 if __name__ == '__main__':
     app.debug = True
     app.run(debug= True)
