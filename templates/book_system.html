@@ -83,7 +83,8 @@ tr:hover .delete-icon { display: inline-block; }
 
   <div class="flex flex-col md:flex-row items-center gap-4 mb-4 fade-in">
   
-  <a href="/clear_history"
+  <a 
+  onclick="confirmDelete('{{ url_for('clear_history') }}')"
     class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-5 rounded-lg transition-all duration-300 flex items-center gap-2">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
      stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -279,7 +280,7 @@ tr:hover .delete-icon { display: inline-block; }
   });
 
   function confirmDelete(deleteUrl) {
-    if (confirm('Are you sure you want to delete this entry?')) {
+    if (confirm('Are you sure you want to delete ?')) {
       window.location.href = deleteUrl;
     
     }
