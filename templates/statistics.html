@@ -6,6 +6,11 @@
     <title>STATISTICS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      html, body {
+        height: 100vh;
+        margin: 0;
+        position: relative;
+      }
       .bg-mesh-gradient {
         background: radial-gradient(
             at 0% 0%,
@@ -13,6 +18,17 @@
             transparent 50%
           ),
           linear-gradient(135deg, #ce7865df, #627fce);
+        padding-bottom: 400px; /* Space for footer */
+      }
+      footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 50;
+        max-height: 40vh;
+        overflow-y: auto;
+        background-color: rgb(31, 41, 55);
       }
     </style>
   </head>

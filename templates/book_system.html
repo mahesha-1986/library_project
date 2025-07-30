@@ -6,6 +6,16 @@
 <title>A+ BBHC</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
+body {
+  padding-bottom: 400px; /* Add padding to prevent footer overlap */
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+}
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
@@ -27,7 +37,8 @@ tr:hover .delete-icon { display: inline-block; }
 </style>
 </head>
 
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100">
+<main>
 <div class="bg-white p-4 md:p-6 flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-6 shadow-sm select-none mb-4">
   <img
     src="{{ url_for('static', filename='OIP.png') }}"
@@ -71,6 +82,20 @@ tr:hover .delete-icon { display: inline-block; }
 
 
   <div class="flex flex-col md:flex-row items-center gap-4 mb-4 fade-in">
+  
+  <a 
+  onclick="confirmDelete('{{ url_for('clear_history') }}')"
+    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-5 rounded-lg transition-all duration-300 flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+     stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M6 18L18 6M6 6l12 12" />
+    </svg>
+    Clear History
+  </a>
+
+  
+
     <a href="/issue-book"
       class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-5 rounded-lg transition-all duration-300 flex items-center gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -129,6 +154,7 @@ tr:hover .delete-icon { display: inline-block; }
             <th class="px-4 py-3 text-left">Issued Date</th>
             <th class="px-4 py-3 text-left">Status</th>
             <th class="px-4 py-3 text-left">Action</th>
+
           </tr>
         </thead>
         <tbody id="tableBody">
@@ -144,6 +170,7 @@ tr:hover .delete-icon { display: inline-block; }
             <td class="px-4 py-3 text-left">{{ book.book.department_code }}</td>
             <td class="px-4 py-3 text-left">{{ book.book.barcode }}</td>
             <td class="px-4 py-3 text-left">{{ book.issued_at }}</td>
+
             <td class="px-4 py-3 text-left">
               <span class="px-2 py-1 rounded-full text-xs font-bold {% if book.status|lower == 'returned' %} bg-green-100 text-green-800 {% else %} bg-yellow-100 text-yellow-800 {% endif %}">
                 {{ book.status | capitalize }}
@@ -161,7 +188,7 @@ tr:hover .delete-icon { display: inline-block; }
                   </div>
                 {% endif %}
                 <!-- Dustbin Icon for Delete (only visible on row hover) -->
-                <img src="{{ url_for('static', filename='dustbin.png') }}" alt="Delete entry" title="Delete entry" class="delete-icon w-5 h-5" onclick="confirmDelete('{{ url_for('delete_entry', id=book._id) }}')" />
+                <img src="{{ url_for('static', filename='dustbin.png') }}" alt="Delete entry" title="Delete entry" class="delete-icon w-5 h-5 z-10" onclick="confirmDelete('{{ url_for('delete_entry', id=book._id) }}')" />
               </div>
             </td>
           </tr>
@@ -253,14 +280,16 @@ tr:hover .delete-icon { display: inline-block; }
   });
 
   function confirmDelete(deleteUrl) {
-    if (confirm('Are you sure you want to delete this entry?')) {
+    if (confirm('Are you sure you want to delete ?')) {
       window.location.href = deleteUrl;
+    
     }
   }
 </script>
 
+</main>
 <!-- Footer -->
-<footer class="bg-gray-800 text-white py-8 mt-8">
+<footer class="bg-gray-800 text-white py-8">
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
       <!-- Contact Us -->
