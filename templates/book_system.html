@@ -6,6 +6,16 @@
 <title>A+ BBHC</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
+body {
+  padding-bottom: 400px; /* Add padding to prevent footer overlap */
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+}
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
@@ -27,7 +37,8 @@ tr:hover .delete-icon { display: inline-block; }
 </style>
 </head>
 
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100">
+<main>
 <div class="bg-white p-4 md:p-6 flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-6 shadow-sm select-none mb-4">
   <img
     src="{{ url_for('static', filename='OIP.png') }}"
@@ -275,8 +286,9 @@ tr:hover .delete-icon { display: inline-block; }
   }
 </script>
 
+</main>
 <!-- Footer -->
-<footer class="bg-gray-800 text-white py-8 mt-8">
+<footer class="bg-gray-800 text-white py-8">
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
       <!-- Contact Us -->
