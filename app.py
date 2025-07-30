@@ -8,6 +8,7 @@ from datetime import datetime
 # Uncomment this line if you want to import books from an Excel file, white initial setup of the application
 #import services.import_books_from_excel 
 from services import Read_DepartmentCodes
+import os
 
 
 logging.basicConfig(level=logging.INFO)
@@ -23,9 +24,17 @@ books_collection = db['books']
 issued_books = db['issued_books']
 
 # Load student data
-with open('student_info.json', 'r', encoding='utf-8') as f:
-    student_data = json.load(f)
+folder_path = "students_data_JSON"
 
+student_data = {}
+
+# Loop through all JSON files in the folder
+for file_name in os.listdir(folder_path):
+    if file_name.endswith(".json"):  # Only process JSON files
+        file_path = os.path.join(folder_path, file_name)
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            student_data.update(data) 
 
 @app.route('/')
 def home():
