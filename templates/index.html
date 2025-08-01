@@ -8,7 +8,7 @@
 <body class="min-h-screen m-0 p-0 bg-gray-50 font-['Segoe_UI',Tahoma,Geneva,Verdana,sans-serif]">
 
     <!-- College Header -->
-    <div class="bg-white p-4 md:p-6 flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-6 shadow-sm mb-4">
+    <div class="bg-white p-4 md:p-6 flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-6 shadow-sm mb-4 select-none">
         <img src="{{ url_for('static', filename='OIP.png') }}"
             alt="College Logo"
             class="h-20 w-20 object-contain mx-auto md:mx-0"
@@ -28,7 +28,7 @@
     <div class="max-w-[500px] mx-auto my-10 bg-white rounded-2xl shadow-lg p-8">
         <!-- Header Row -->
         <div class="flex justify-between items-center mb-5">
-            <h1 class="text-gray-700 m-0">Student</h1>
+            <h1 class="text-gray-700 m-0 text-3xl font-bold">Student</h1>
             <a href="{{ url_for('home') }}" 
                class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white rounded-lg font-bold text-sm hover:from-[#764ba2] hover:to-[#667eea] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
