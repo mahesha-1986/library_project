@@ -131,15 +131,56 @@
     .floating-button:hover .arrow {
         transform: translateX(3px);
     }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      padding: 20px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .logo {
+      height: 100px;
+      margin-right: 20px;
+    }
+    .title-container {
+      flex: 1;
+    }
+    .college-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #6b0000;
+      margin: 0;
+      border-bottom: 3px solid #1f2937; /* Tailwind's gray-800 */
+      padding-bottom: 5px;
+    }
+    .subtext {
+      font-size: 16px;
+      color: #374151; /* Tailwind's gray-700 */
+      margin-top: 5px;
+    }
 </style>
 </head>
 <body>
 
-<div class="college-header">
-    <div class="college-header-row">
-        <img src="{{ url_for('static', filename='college_logo.png') }}" alt="College Logo" class="college-logo">
-    </div>
+
+    
+
+
+<div class="header">
+  <img src="{{ url_for('static', filename='OIP.png') }}" alt="College Logo" class="logo">
+  <div class="title-container">
+    <p class="college-name">Dr. B. B. Hegde First Grade College, Kundapura</p>
+    <p class="subtext">A Unit of Coondapur Education Society (R)</p>
+  </div>
 </div>
+
+
 
 <div class="container">
 
