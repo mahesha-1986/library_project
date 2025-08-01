@@ -1,181 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Student Lookup</title>
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-        background: #f7f7f7;
-    }
-    .college-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        background: #fff;
-        padding: 20px 10px 10px 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .college-header-row {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-    }
-    .college-logo {
-        height: 80px;
-        margin-right: 20px;
-    }
-
-    .container {
-        background: #fff;
-        max-width: 500px;
-        margin: 40px auto;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        padding: 40px 30px 30px 30px;
-    }
-    .header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    h1 {
-        color: #333;
-        margin: 0;
-    }
-    form {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-    input[type="text"] {
-        padding: 10px 15px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        font-size: 16px;
-        width: 220px;
-    }
-    button {
-        padding: 10px 25px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-    button:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    }
-    .result, .error {
-        margin-top: 20px;
-        padding: 18px;
-        border-radius: 10px;
-        font-size: 1.1em;
-    }
-    .result {
-        background: #e6ffe6;
-        color: #222;
-        border-left: 5px solid #00b894;
-    }
-    .error {
-        background: #ffe6e6;
-        color: #d63031;
-        border-left: 5px solid #d63031;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-    }
-    th, td {
-        padding: 10px;
-        border-bottom: 1px solid #eee;
-        text-align: left;
-    }
-    th {
-        background: #f3f3f3;
-    }
-    .floating-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 8px 16px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: bold;
-        font-size: 14px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    .floating-button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-    }
-    .arrow {
-        display: inline-block;
-        margin-left: 4px;
-        transition: transform 0.3s ease;
-    }
-    .floating-button:hover .arrow {
-        transform: translateX(3px);
-    }
-</style>
+    <meta charset="UTF-8">
+    <title>Student Lookup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="min-h-screen m-0 p-0 bg-gray-50 font-['Segoe_UI',Tahoma,Geneva,Verdana,sans-serif]">
 
-<div class="college-header">
-    <div class="college-header-row">
-        <img src="{{ url_for('static', filename='college_logo.png') }}" alt="College Logo" class="college-logo">
+    <!-- College Header -->
+    <div class="bg-white p-4 md:p-6 flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-6 shadow-sm mb-4">
+        <img src="{{ url_for('static', filename='OIP.png') }}"
+            alt="College Logo"
+            class="h-20 w-20 object-contain mx-auto md:mx-0"
+        />
+        <div class="flex-1 text-center md:text-left">
+            <h1 class="text-xl md:text-2xl font-bold text-[#6b1111]">
+                Dr. B. B. Hegde First Grade College, Kundapura
+            </h1>
+            <hr class="border-t-4 border-gray-800 my-1 w-full">
+            <p class="text-sm md:text-base text-gray-600 mt-1">
+                A Unit of Coondapur Education Society (R)
+            </p>
+        </div>
     </div>
-</div>
 
-<div class="container">
-
-    <div class="header-row">
-        <h1>Student</h1>
-        <a href="{{ url_for('home') }}" class="floating-button">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9.75L12 4.5l9 5.25M4.5 10.5V19.5a.75.75 0 00.75.75H9V15h6v5.25h3.75a.75.75 0 00.75-.75V10.5" />
-            </svg>
-            Home
-        </a>
-    </div>
-
-    <form method="post">
-        <input type="text" name="rollno" placeholder="Enter Roll Number (e.g., BBA24001)" required>
-        <button type="submit">Search</button>
-    </form>
-
-    {% if result %}
-        <div class="result">
-            <strong>Result for Roll Number: {{ result.rollno }}</strong>
-            <table>
-                <tr><th>Name</th><td>{{ result.studentName }}</td></tr>
-                <tr><th>Section</th><td>{{ result.section }}</td></tr>
-                
-            </table>
-            <a href="{{ url_for('view_books',rollno=result.rollno) }}" class="floating-button">
-                Continue <span class="arrow">→</span>
+    <!-- Main Container -->
+    <div class="max-w-[500px] mx-auto my-10 bg-white rounded-2xl shadow-lg p-8">
+        <!-- Header Row -->
+        <div class="flex justify-between items-center mb-5">
+            <h1 class="text-gray-700 m-0">Student</h1>
+            <a href="{{ url_for('home') }}" 
+               class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white rounded-lg font-bold text-sm hover:from-[#764ba2] hover:to-[#667eea] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9.75L12 4.5l9 5.25M4.5 10.5V19.5a.75.75 0 00.75.75H9V15h6v5.25h3.75a.75.75 0 00.75-.75V10.5" />
+                </svg>
+                Home
             </a>
         </div>
-    {% elif error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
-</div>
 
+        <!-- Search Form -->
+        <form method="post" class="flex gap-3 justify-center mb-5">
+            <input type="text" 
+                   name="rollno" 
+                   placeholder="Enter Roll Number (e.g., BBA24001)" 
+                   required
+                   class="px-4 py-2.5 border-2 border-gray-200 rounded-lg text-base w-[220px] focus:outline-none focus:border-[#667eea]">
+            <button type="submit" 
+                    class="px-6 py-2.5 bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white rounded-lg text-base font-bold cursor-pointer hover:from-[#764ba2] hover:to-[#667eea] transition-all duration-300">
+                Search
+            </button>
+        </form>
 
+        <!-- Results Section -->
+        {% if result %}
+            <div class="mt-5 p-4.5 rounded-lg text-[1.1em] bg-green-50 border-l-4 border-[#00b894]">
+                <strong class="ml-1 text-xl">Result for Roll Number: {{ result.rollno }}</strong>
+                <table class="w-full border-collapse mt-2.5">
+                    <tr>
+                        <th class="p-2.5 border-b border-gray-200 text-left bg-gray-50">Name</th>
+                        <td class="p-2.5 border-b border-gray-200">{{ result.studentName }}</td>
+                    </tr>
+                    <tr>
+                        <th class="p-2.5 border-b border-gray-200 text-left bg-gray-50">Section</th>
+                        <td class="p-2.5 border-b border-gray-200">{{ result.section }}</td>
+                    </tr>
+                </table>
+                <a href="{{ url_for('view_books',rollno=result.rollno) }}" 
+                   class="inline-flex items-center ml-2 gap-2 px-4 py-2 mt-4 bg-gradient-to-r from-[#667eea] to-[#764ba2] text-white rounded-lg font-bold text-sm hover:from-[#764ba2] hover:to-[#667eea] transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                    Continue 
+                    <span class="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </a>
+            </div>
+        {% elif error %}
+            <div class="mt-5 p-4.5 rounded-lg text-[1.1em] bg-red-50 text-[#d63031] border-l-4 border-[#d63031]">
+                {{ error }}
+            </div>
+        {% endif %}
+    </div>
 </body>
-
 </html>
