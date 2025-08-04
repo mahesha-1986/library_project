@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for, session , flash
+from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash, send_file
 import json
 import logging
 import pandas as pd
@@ -116,9 +116,196 @@ def search_statistics():
 
 @app.route('/clear_history')
 def clear_history():
-    issued_books.delete_many({})  # Adjust collection name if different
-    flash('All book transaction history cleared successfully.', 'success')
-    return redirect(url_for('home'))  # Adjust this to your main page
+    try:
+        # Get all issued books data before deleting
+        all_issued_books = list(issued_books.find())
+        
+        if all_issued_books:
+            # Create Excel file with deleted data
+            import pandas as pd
+            from datetime import datetime
+            
+            # Prepare data for Excel
+            excel_data = []
+            for book in all_issued_books:
+                excel_data.append({
+                    'Student Name': book['student']['studentName'],
+                    'Roll Number': book['student']['rollno'],
+                    'Section': book['student']['section'],
+                    'Book Title': book['book']['title'],
+                    'Author': book['book']['author'],
+                    'Department': book['book']['department'],
+                    'Department Code': book['book']['department_code'],
+                    'Barcode': book['book']['barcode'],
+                    'Accession Number': book['book']['accession_number'],
+                    'Status': book['status'],
+                    'Issued Date': book['issued_at'],
+                    'Returned Date': book.get('returned_at', ''),
+                    'Deleted Date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                })
+            
+            # Generate filename with timestamp
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f'deleted_book_history_{timestamp}.xlsx'
+            
+            # Create workbook and worksheet directly
+            from openpyxl import Workbook
+            from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+            
+            wb = Workbook()
+            ws = wb.active
+            ws.title = "Deleted Book History"
+            
+            # Define headers
+            headers = [
+                'Student Name', 'Roll Number', 'Section', 'Book Title', 'Author',
+                'Department', 'Department Code', 'Barcode', 'Accession Number',
+                'Status', 'Issued Date', 'Returned Date', 'Deleted Date'
+            ]
+            
+            # Write headers to first row
+            for col, header in enumerate(headers, 1):
+                ws.cell(row=1, column=col, value=header)
+            
+            # Write data rows
+            for row_idx, book in enumerate(all_issued_books, 2):
+                ws.cell(row=row_idx, column=1, value=book['student']['studentName'])
+                ws.cell(row=row_idx, column=2, value=book['student']['rollno'])
+                ws.cell(row=row_idx, column=3, value=book['student']['section'])
+                ws.cell(row=row_idx, column=4, value=book['book']['title'])
+                ws.cell(row=row_idx, column=5, value=book['book']['author'])
+                ws.cell(row=row_idx, column=6, value=book['book']['department'])
+                ws.cell(row=row_idx, column=7, value=book['book']['department_code'])
+                ws.cell(row=row_idx, column=8, value=book['book']['barcode'])
+                ws.cell(row=row_idx, column=9, value=book['book']['accession_number'])
+                ws.cell(row=row_idx, column=10, value=book['status'])
+                ws.cell(row=row_idx, column=11, value=book['issued_at'])
+                ws.cell(row=row_idx, column=12, value=book.get('returned_at', ''))
+                ws.cell(row=row_idx, column=13, value=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            
+            # Dynamically calculate column widths based on content
+            for col in range(1, len(headers) + 1):
+                max_length = 0
+                column_letter = ws.cell(row=1, column=col).column_letter
+                
+                # Check header length
+                header_length = len(headers[col-1])
+                max_length = max(max_length, header_length)
+                
+                # Check all data in this column
+                for row_idx in range(2, len(all_issued_books) + 2):
+                    cell_value = ws.cell(row=row_idx, column=col).value
+                    if cell_value:
+                        cell_length = len(str(cell_value))
+                        max_length = max(max_length, cell_length)
+                
+                # Set column width with padding
+                if max_length > 0:
+                    # Add padding based on content length
+                    if max_length <= 10:
+                        optimal_width = max_length + 8  # Extra padding for short content
+                    elif max_length <= 20:
+                        optimal_width = max_length + 6  # Good padding for medium content
+                    elif max_length <= 30:
+                        optimal_width = max_length + 4  # Adequate padding for longer content
+                    else:
+                        optimal_width = max_length + 2  # Minimal padding for very long content
+                    
+                    # Apply constraints
+                    final_width = max(15, min(optimal_width, 80))  # Min 15, Max 80
+                    ws.column_dimensions[column_letter].width = final_width
+                else:
+                    # Default width for empty columns
+                    ws.column_dimensions[column_letter].width = 20
+            
+            # Format header row
+            header_font = Font(bold=True, color="FFFFFF")
+            header_fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+            header_alignment = Alignment(horizontal="center", vertical="center")
+            
+            for col in range(1, len(headers) + 1):
+                cell = ws.cell(row=1, column=col)
+                cell.font = header_font
+                cell.fill = header_fill
+                cell.alignment = header_alignment
+            
+            # Format data rows
+            data_alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+            thin_border = Border(
+                left=Side(style='thin'),
+                right=Side(style='thin'),
+                top=Side(style='thin'),
+                bottom=Side(style='thin')
+            )
+            
+            for row in range(1, len(all_issued_books) + 2):  # +2 for header row
+                for col in range(1, len(headers) + 1):
+                    cell = ws.cell(row=row, column=col)
+                    cell.alignment = data_alignment
+                    cell.border = thin_border
+            
+            # Save the workbook
+            wb.save(filename)
+            
+            # Delete from database
+            issued_books.delete_many({})
+            
+            flash(f'All book transaction history cleared successfully. Deleted data saved to {filename}', 'success')
+        else:
+            flash('No data to clear.', 'info')
+            
+    except Exception as e:
+        logger.error(f"Error in clear_history: {e}")
+        flash('Error clearing history. Please try again.', 'error')
+    
+    return redirect(url_for('home'))
+
+@app.route('/deleted_data')
+def deleted_data():
+    import os
+    import glob
+    
+    try:
+        # Find all deleted data Excel files
+        excel_files = glob.glob('deleted_book_history_*.xlsx')
+        excel_files.sort(reverse=True)  # Sort by newest first
+        
+        file_info = []
+        for file in excel_files:
+            file_stat = os.stat(file)
+            file_info.append({
+                'filename': file,
+                'size': file_stat.st_size,
+                'created': datetime.fromtimestamp(file_stat.st_ctime).strftime('%Y-%m-%d %H:%M:%S')
+            })
+        
+        return render_template('deleted_data.html', files=file_info)
+        
+    except Exception as e:
+        logger.error(f"Error in deleted_data route: {e}")
+        flash('Error loading deleted data files.', 'error')
+        return redirect(url_for('home'))
+
+@app.route('/download_deleted_data/<filename>')
+def download_deleted_data(filename):
+    import os
+    
+    try:
+        # Security check - only allow downloading files that start with 'deleted_book_history_'
+        if not filename.startswith('deleted_book_history_') or not filename.endswith('.xlsx'):
+            flash('Invalid file requested.', 'error')
+            return redirect(url_for('deleted_data'))
+        
+        if os.path.exists(filename):
+            return send_file(filename, as_attachment=True)
+        else:
+            flash('File not found.', 'error')
+            return redirect(url_for('deleted_data'))
+            
+    except Exception as e:
+        logger.error(f"Error downloading file {filename}: {e}")
+        flash('Error downloading file.', 'error')
+        return redirect(url_for('deleted_data'))
 
 @app.route("/recommendation")
 def recommendation():
