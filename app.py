@@ -133,6 +133,7 @@ def clear_history():
         if all_issued_books:
             # Create Excel file with the data before clearing
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            fileCreated = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             filename = f"cleared_history_{timestamp}.xlsx"
             file_path = os.path.join(UPLOAD_FOLDER, filename)
             
@@ -149,12 +150,100 @@ def clear_history():
                     'Department': book.get('book', {}).get('department', ''),
                     'Status': book.get('status', ''),
                     'Issued At': book.get('issued_at', ''),
-                    'Returned At': book.get('returned_at', '')
+                    'Returned At': book.get('returned_at', ''),
+                    'Created Date' : fileCreated
+
                 })
             
-            # Create DataFrame and save to Excel
-            df = pd.DataFrame(excel_data)
-            df.to_excel(file_path, index=False, engine='openpyxl')
+            # Create Excel file with proper column formatting
+            from openpyxl import Workbook
+            from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+            from openpyxl.utils import get_column_letter
+            
+            wb = Workbook()
+            ws = wb.active
+            ws.title = "Cleared Book History"
+            
+            # Define headers
+            headers = [
+                'Student Name', 'Roll No', 'Section', 'Book Title', 'Book Author',
+                'Barcode', 'Department', 'Status', 'Issued At', 'Returned At',
+                'Created Date'
+            ]
+            
+            # Write headers
+            for col, header in enumerate(headers, 1):
+                cell = ws.cell(row=1, column=col, value=header)
+                cell.font = Font(bold=True, color="FFFFFF")
+                cell.fill = PatternFill(start_color="366092", end_color="366092", fill_type="solid")
+                cell.alignment = Alignment(horizontal="center", vertical="center")
+            
+            # Write data
+            for row_idx, book in enumerate(all_issued_books, 2):
+                ws.cell(row=row_idx, column=1, value=book.get('student', {}).get('studentName', ''))
+                ws.cell(row=row_idx, column=2, value=book.get('student', {}).get('rollno', ''))
+                ws.cell(row=row_idx, column=3, value=book.get('student', {}).get('section', ''))
+                ws.cell(row=row_idx, column=4, value=book.get('book', {}).get('title', ''))
+                ws.cell(row=row_idx, column=5, value=book.get('book', {}).get('author', ''))
+                ws.cell(row=row_idx, column=6, value=book.get('book', {}).get('barcode', ''))
+                ws.cell(row=row_idx, column=7, value=book.get('book', {}).get('department', ''))
+                ws.cell(row=row_idx, column=8, value=book.get('status', ''))
+                ws.cell(row=row_idx, column=9, value=book.get('issued_at', ''))
+                ws.cell(row=row_idx, column=10, value=book.get('returned_at', ''))
+                ws.cell(row=row_idx, column=11, value=fileCreated)
+            
+            # Auto-adjust column widths based on content
+            for col in range(1, len(headers) + 1):
+                max_length = 0
+                column_letter = get_column_letter(col)
+                
+                # Check header length
+                header_length = len(headers[col-1])
+                max_length = max(max_length, header_length)
+                
+                # Check all data in this column
+                for row_idx in range(2, len(all_issued_books) + 2):
+                    cell_value = ws.cell(row=row_idx, column=col).value
+                    if cell_value:
+                        cell_length = len(str(cell_value))
+                        max_length = max(max_length, cell_length)
+                
+                # Set optimal column width with padding
+                if max_length > 0:
+                    # Add padding based on content length
+                    if max_length <= 10:
+                        optimal_width = max_length + 8  # Extra padding for short content
+                    elif max_length <= 20:
+                        optimal_width = max_length + 6  # Good padding for medium content
+                    elif max_length <= 30:
+                        optimal_width = max_length + 4  # Adequate padding for longer content
+                    else:
+                        optimal_width = max_length + 2  # Minimal padding for very long content
+                    
+                    # Apply constraints (min 15, max 80)
+                    final_width = max(15, min(optimal_width, 80))
+                    ws.column_dimensions[column_letter].width = final_width
+                else:
+                    # Default width for empty columns
+                    ws.column_dimensions[column_letter].width = 20
+            
+            # Format data rows
+            data_alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
+            thin_border = Border(
+                left=Side(style='thin'),
+                right=Side(style='thin'),
+                top=Side(style='thin'),
+                bottom=Side(style='thin')
+            )
+            
+            for row in range(1, len(all_issued_books) + 2):  # +2 for header row
+                for col in range(1, len(headers) + 1):
+                    cell = ws.cell(row=row, column=col)
+                    cell.alignment = data_alignment
+                    cell.border = thin_border
+            
+            # Save the workbook
+            wb.save(file_path)
             
             # Clear the history
             issued_books.delete_many({})
@@ -234,49 +323,37 @@ def clear_all_excel_files():
 
 @app.route('/deleted_data')
 def deleted_data():
-    import os
-    import glob
+    files = []
+    excel_folder = 'static/clear_history_excel'
     
-    try:
-        # Find all deleted data Excel files
-        excel_files = glob.glob('deleted_book_history_*.xlsx')
-        excel_files.sort(reverse=True)  # Sort by newest first
-        
-        file_info = []
-        for file in excel_files:
-            file_stat = os.stat(file)
-            file_info.append({
-                'filename': file,
-                'size': file_stat.st_size,
-                'created': datetime.fromtimestamp(file_stat.st_ctime).strftime('%Y-%m-%d %H:%M:%S')
-            })
-        
-        return render_template('deleted_data.html', files=file_info)
-        
-    except Exception as e:
-        logger.error(f"Error in deleted_data route: {e}")
-        flash('Error loading deleted data files.', 'error')
-        return redirect(url_for('home'))
+    if os.path.exists(excel_folder):
+        for filename in os.listdir(excel_folder):
+            if filename.endswith('.xlsx'):
+                file_path = os.path.join(excel_folder, filename)
+                file_size = os.path.getsize(file_path)
+                file_date = datetime.fromtimestamp(os.path.getctime(file_path))
+                files.append({
+                    'filename': filename,
+                    'size': file_size,
+                    'created': file_date.strftime('%Y-%m-%d %H:%M:%S')
+                })
+    
+    # Sort files by date (newest first)
+    files.sort(key=lambda x: x['created'], reverse=True)
+    
+    return render_template('deleted_data.html', files=files)
 
 @app.route('/download_deleted_data/<filename>')
 def download_deleted_data(filename):
-    import os
-    
     try:
-        # Security check - only allow downloading files that start with 'deleted_book_history_'
-        if not filename.startswith('deleted_book_history_') or not filename.endswith('.xlsx'):
-            flash('Invalid file requested.', 'error')
-            return redirect(url_for('deleted_data'))
-        
-        if os.path.exists(filename):
-            return send_file(filename, as_attachment=True)
+        file_path = os.path.join('static/clear_history_excel', filename)
+        if os.path.exists(file_path):
+            return send_file(file_path, as_attachment=True)
         else:
-            flash('File not found.', 'error')
+            flash('File not found', 'error')
             return redirect(url_for('deleted_data'))
-            
     except Exception as e:
-        logger.error(f"Error downloading file {filename}: {e}")
-        flash('Error downloading file.', 'error')
+        flash(f'Error downloading file: {str(e)}', 'error')
         return redirect(url_for('deleted_data'))
 
 @app.route("/recommendation")
