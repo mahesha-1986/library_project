@@ -129,14 +129,40 @@ def clear_history():
     try:
         # Get all issued books history before clearing
         all_issued_books = list(issued_books.find())
-        
+        print("all_issued_books", all_issued_books)
         if all_issued_books:
-            # Create Excel file with the data before clearing
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            fileCreated = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            filename = f"cleared_history_{timestamp}.xlsx"
-            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            # Extract date range from database records
+            from datetime import datetime
             
+            # Get all issued_at dates and convert them to datetime objects
+            issued_dates = []
+            for book in all_issued_books:
+                if book.get('issued_at'):
+                    try:
+                        # Parse the issued_at string to datetime
+                        date_obj = datetime.strptime(book['issued_at'], '%Y-%m-%d %H:%M:%S')
+                        issued_dates.append(date_obj)
+                    except ValueError:
+                        # If parsing fails, skip this record
+                        continue
+            
+            if issued_dates:
+                # Find the earliest and latest dates
+                earliest_date = min(issued_dates)
+                latest_date = max(issued_dates)
+                
+                # Format dates as date_month_year
+                first_date_str = earliest_date.strftime('%d_%m_%Y')
+                last_date_str = latest_date.strftime('%d_%m_%Y')
+                
+                filename = f"Issue_return_history_{first_date_str}_to_{last_date_str}.xlsx"
+            else:
+                # Fallback to timestamp if no valid dates found
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = f"Issue_return_history_{timestamp}.xlsx"
+            
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            fileCreated = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             # Prepare data for Excel
             excel_data = []
             for book in all_issued_books:
