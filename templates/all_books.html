@@ -7,8 +7,7 @@
   <title>All Books</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    html,
-    body {
+    html, body {
       height: 100vh;
       margin: 0;
       display: flex;
@@ -31,42 +30,6 @@
       max-height: 40vh;
       overflow-y: auto;
       background-color: rgb(31, 41, 55);
-    }
-
-    .spin {
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    button:hover .lid {
-      animation: shake 0.4s ease;
-    }
-
-    @keyframes shake {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      25% {
-        transform: rotate(-15deg);
-      }
-
-      50% {
-        transform: rotate(10deg);
-      }
-
-      75% {
-        transform: rotate(-10deg);
-      }
-
-      100% {
-        transform: rotate(0deg);
-      }
     }
 
     .floating-dustbin {
@@ -94,25 +57,11 @@
     }
 
     @keyframes shake {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      25% {
-        transform: rotate(-15deg);
-      }
-
-      50% {
-        transform: rotate(10deg);
-      }
-
-      75% {
-        transform: rotate(-10deg);
-      }
-
-      100% {
-        transform: rotate(0deg);
-      }
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-15deg); }
+      50% { transform: rotate(10deg); }
+      75% { transform: rotate(-10deg); }
+      100% { transform: rotate(0deg); }
     }
   </style>
 </head>
@@ -154,7 +103,6 @@
 
     <div class="text-center mb-4">
       <h1 class="text-3xl font-bold text-gray-800 mb-0.48">Book Collection</h1>
-
       <div class="text-center">
         <span class="text-sm text-gray-600">
           Total Books: <span class="font-bold">{{ Book_Count }}</span>
@@ -191,14 +139,19 @@
         </div>
       </div>
 
-      <!-- Flash messages and Add Button (unchanged) -->
-      {% with messages = get_flashed_messages(with_categories=true) %} {% for
-      category, message in messages %}
-      <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
-        class="px-4 py-2 rounded shadow-lg transition transform {% if category == 'success' %} bg-green-500 text-white {% elif category == 'error' %} bg-red-500 text-white {% endif %}">
-        {{ message }}
-      </div>
-      {% endfor %} {% endwith %}
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div x-data="{ show: true }" 
+               x-show="show" 
+               x-init="setTimeout(() => show = false, 3000)"
+               class="px-4 py-2 rounded shadow-lg transition transform 
+               {% if category == 'success' %} bg-green-500 text-white 
+               {% elif category == 'error' %} bg-red-500 text-white {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endwith %}
 
       <!-- Add Book -->
       <button onclick="openAddModal()"
@@ -228,7 +181,7 @@
             <!-- Cross and Tooltip -->
             <div id="accessionErrorIcon"
               class="absolute right-2 top-1/2 transform -translate-y-1/2 hidden cursor-pointer group">
-              <svg class="w-6 h-6 text-red-500 animate-cross" viewBox="0 0 52 52" fill="none"
+              <svg class="w-6 h-6 text-red-500" viewBox="0 0 52 52" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <circle cx="26" cy="26" r="25" stroke="currentColor" stroke-width="2" fill="none" />
                 <path d="M17 17L35 35M35 17L17 35" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
@@ -239,9 +192,8 @@
             </div>
 
             <!-- Green Tick -->
-
             <svg id="accessionValidIcon"
-              class="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 text-green-500 animate-checkmark"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 text-green-500"
               viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="26" cy="26" r="25" stroke="currentColor" stroke-width="2" fill="none" />
               <path d="M16 27L23 34L36 19" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
@@ -301,7 +253,6 @@
               <th class="px-4 py-3 text-left">Dept Code</th>
               <th class="px-4 py-3 text-left">Barcode Number</th>
               <th class="px-4 py-3 text-left">Availability</th>
-
             </tr>
           </thead>
           <tbody id="tableBody">
@@ -341,7 +292,7 @@
                 {% endif %}
               </td>
 
-              <!-- Floating Dustbin in its own column -->
+              <!-- Floating Dustbin -->
               <td class="relative">
                 <button class="floating-dustbin" title="Delete"
                   onclick="openDeleteModal('{{ book.accession_number }}')">
@@ -353,14 +304,13 @@
                     <rect x="26" y="10" width="12" height="4" rx="1" fill="currentColor"></rect>
                   </svg>
                 </button>
-
               </td>
             </tr>
             {% endfor %}
           </tbody>
-
         </table>
       </div>
+
       <!-- Delete Confirmation Modal -->
       <div id="deleteConfirmModal"
         class="fixed inset-0 flex items-center justify-center bg-red-900/40 backdrop-blur-sm hidden z-[9999]">
@@ -390,9 +340,29 @@
           </div>
         </div>
       </div>
+      
 
-      <!-- Delete Success Popup -->
+      <!-- Delete Success Modal -->
       <div id="deleteSuccessModal"
+      class="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm hidden z-[9999]">
+      <div class="bg-white rounded-xl shadow-2xl p-6 w-80 text-center transform transition-all scale-95">
+        <svg class="w-14 h-14 text-green-600 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24" stroke="red">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        <h2 class="text-xl font-bold text-red-700 mb-2">Deleting Book...</h2>
+        <p class="text-gray-600 mb-4">The selected book is being deleting. Please wait while the page reloads...</p>
+        <div class="flex justify-center">
+          <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600"></div>
+          <span class="ml-2 text-sm text-gray-600">Deleting...</span>
+        </div>
+      </div>
+    </div>
+    
+
+      <!-- Add Success Modal -->
+      <div id="addSuccessModal"
         class="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm hidden z-[9999]">
         <div class="bg-white rounded-xl shadow-2xl p-6 w-80 text-center transform transition-all scale-95">
           <svg class="w-14 h-14 text-green-600 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -400,18 +370,16 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <h2 class="text-xl font-bold text-green-700 mb-2">Deleted Successfully</h2>
-          <p class="text-gray-600 mb-4">The book has been removed from the collection.</p>
-          <button onclick="closeSuccessModal()"
+          <h2 class="text-xl font-bold text-green-700 mb-2">Book Added Successfully</h2>
+          <p class="text-gray-600 mb-4">The book has been added to the collection.</p>
+          <button onclick="closeAddSuccessModal()"
             class="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg shadow text-white transition">OK</button>
         </div>
       </div>
 
-
       <div id="noRecordMessage" class="hidden text-center text-gray-500 my-4 text-lg">
         No record found.
       </div>
-
     </div>
 
     <div class="flex justify-end my-4">
@@ -435,13 +403,12 @@
     loader.classList.add("hidden");
     errorIcon.classList.add("hidden");
     validIcon.classList.add("hidden");
+    
     const pageSize = 20;
     let visibleCount = 0;
-    let found = false;
-    let foundBook = {};
+    let bookToDelete = null;
 
     const container = document.getElementById("tableContainer");
-
     let isDown = false;
     let startX;
     let scrollLeft;
@@ -473,19 +440,35 @@
 
     form.addEventListener("submit", function () {
       loadingOverlay.classList.remove("hidden");
+      // Show add success message after form submission
+      setTimeout(() => {
+        showAddSuccessMessage();
+      }, 1000);
     });
 
-    // Optional: remove overlay on window load (if redirect brings it back)
+    function showAddSuccessMessage() {
+      const successModal = document.getElementById("addSuccessModal");
+      if (successModal) {
+        successModal.classList.remove("hidden");
+        setTimeout(() => {
+          successModal.classList.add("hidden");
+        }, 3000);
+      }
+    }
+
+    function closeAddSuccessModal() {
+      const successModal = document.getElementById("addSuccessModal");
+      if (successModal) {
+        successModal.classList.add("hidden");
+      }
+    }
+
     window.addEventListener("load", () => {
       loadingOverlay.classList.add("hidden");
     });
 
     function renderRows() {
-      for (
-        let i = visibleCount;
-        i < visibleCount + pageSize && i < rows.length;
-        i++
-      ) {
+      for (let i = visibleCount; i < visibleCount + pageSize && i < rows.length; i++) {
         rows[i].classList.remove("hidden");
       }
       visibleCount += pageSize;
@@ -547,38 +530,9 @@
       loadMoreBtn.classList.add("hidden");
     }
 
-
     function openAddModal() {
       document.getElementById("addModal").classList.remove("hidden");
-    }
-
-    function closeAddModal() {
-      document.getElementById("accession_number").value = "";
-      document.getElementById("modalBookName").value = "";
-      document.getElementById("author").value = "";
-      document.getElementById("department").value = "";
-
-      document.getElementById("addModal").classList.add("hidden");
-    }
-
-    function submitAddBook() {
-      const bookName = modalBookName.value.trim();
-      const deptName = modalDeptName.value.trim();
-      const deptCode = modalDeptCode.value.trim();
-      const barcode = modalBarcode.value.trim();
-
-      if (!bookName || !deptName || !deptCode || !barcode) {
-        alert("Please fill all fields!");
-        return;
-      }
-
-      alert("Book added: " + bookName);
-      closeAddModal();
-    }
-
-    function openAddModal() {
-      document.getElementById("addModal").classList.remove("hidden");
-      checkFormFilled(); // check once when opening
+      checkFormFilled();
     }
 
     function closeAddModal() {
@@ -596,13 +550,12 @@
 
       document.getElementById("addModal").classList.add("hidden");
     }
+
     function checkFormFilled() {
       const bookName = document.getElementById("modalBookName").value.trim();
       const author = document.getElementById("author").value.trim();
       const department = document.getElementById("department").value.trim();
-      const accessionValid = !document
-        .getElementById("accessionValidIcon")
-        .classList.contains("hidden");
+      const accessionValid = !document.getElementById("accessionValidIcon").classList.contains("hidden");
       const submitBtn = document.getElementById("submitAddBtn");
 
       if (bookName && author && department && accessionValid) {
@@ -617,7 +570,6 @@
     function checkAccessionExists() {
       const input = document.getElementById("accession_number");
       const value = input.value.trim();
-
       const tooltip = document.getElementById("tooltipContent");
 
       loader.classList.remove("hidden");
@@ -626,7 +578,7 @@
 
       if (!value) {
         loader.classList.add("hidden");
-        checkFormFilled(); // still validate form
+        checkFormFilled();
         return;
       }
 
@@ -644,10 +596,7 @@
             department: row.children[3]?.textContent.trim() || "",
             department_code: row.children[4]?.textContent.trim() || "",
             barcode: row.children[5]?.textContent.trim() || "",
-            status:
-              row.children[6]?.textContent.trim().toLowerCase() == "available"
-                ? "Available"
-                : "Not Available",
+            status: row.children[6]?.textContent.trim().toLowerCase() == "available" ? "Available" : "Not Available",
           };
         }
       });
@@ -670,22 +619,16 @@
       checkFormFilled();
     }
 
-    let bookToDelete = null;
-
-    // Open delete modal
     function openDeleteModal(accessionNumber) {
       bookToDelete = accessionNumber;
       document.getElementById("deleteConfirmModal").classList.remove("hidden");
     }
 
-    // Close delete modal
     function closeDeleteModal() {
       document.getElementById("deleteConfirmModal").classList.add("hidden");
       bookToDelete = null;
-      window.location.reload()
     }
 
-    // Confirm deletion
     document.getElementById("confirmDeleteBtn").addEventListener("click", () => {
       if (!bookToDelete) return;
 
@@ -694,13 +637,11 @@
         .then((data) => {
           closeDeleteModal();
           if (data.success) {
-            // Remove row dynamically
-            document.querySelectorAll("#tableBody tr").forEach((row) => {
-              if (row.children[0].textContent.trim() === bookToDelete) {
-                row.remove();
-              }
-            });
-            openSuccessModal();
+            // Show success message and reload
+            showDeleteSuccessMessage();
+            setTimeout(() => {
+              window.location.href = `/delete_book_success/${bookToDelete}`;
+            }, 1500);
           } else {
             alert(data.message || "Book not found");
           }
@@ -708,21 +649,12 @@
         .catch(() => alert("Error deleting book"));
     });
 
-    // Open success modal
-    function openSuccessModal() {
-      document.getElementById("deleteSuccessModal").classList.remove("hidden");
+    function showDeleteSuccessMessage() {
+      const successModal = document.getElementById("deleteSuccessModal");
+      successModal.classList.remove("hidden");
     }
-
-    // Close success modal
-    function closeSuccessModal() {
-      document.getElementById("deleteSuccessModal").classList.add("hidden");
-    }
-
-
-
   </script>
   <script src="//unpkg.com/alpinejs" defer></script>
-
 
 </body>
 
