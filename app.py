@@ -378,6 +378,19 @@ def delete_entry(id):
         return 'Error deleting entry', 500
     return redirect(url_for('home'))
 
+@app.route("/delete_book/<accession_number>", methods=["DELETE"])
+def delete_book(accession_number):
+    try:
+        # Delete the book by accession number
+        result = books_collection.delete_one({"accession_number": accession_number})
+
+        if result.deleted_count > 0:
+            return jsonify({"success": True, "message": "Book deleted successfully"})
+        else:
+            return jsonify({"success": False, "message": "Book not found"}), 404
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
 if __name__ == '__main__':
     app.debug = True
     app.run(debug= True)
