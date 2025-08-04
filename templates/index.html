@@ -76,6 +76,54 @@
                 {{ error }}
             </div>
         {% endif %}
+
+        <!-- Book Limit Popup -->
+        {% if show_limit_popup %}
+        <div id="limitPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl">
+                <div class="flex items-center mb-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-8 w-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-medium text-gray-900">Book Limit Reached!</h3>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600">
+                        Student <strong>{{ result.studentName }}</strong> (Roll No: {{ result.rollno }}) has already reached the maximum limit of 4 books.
+                    </p>
+                    <p class="text-sm text-gray-600 mt-2">
+                        Please return some books before attempting to issue new ones.
+                    </p>
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="closeLimitPopup()" class="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
+
+    <script>
+    function closeLimitPopup() {
+        const popup = document.getElementById('limitPopup');
+        if (popup) {
+            popup.style.display = 'none';
+        }
+    }
+
+    // Close popup when clicking outside of it
+    document.addEventListener('click', function(event) {
+        const popup = document.getElementById('limitPopup');
+        if (popup && event.target === popup) {
+            popup.style.display = 'none';
+        }
+    });
+    </script>
 </body>
 </html>

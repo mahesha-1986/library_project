@@ -195,13 +195,26 @@ def all_books():
 def index():
     result = None
     error = None
+    student_books_count = None
+    show_limit_popup = False
+    
     if request.method == 'POST':
         key = request.form.get('rollno', '').strip().upper()
         if key in student_data:
             result = {'rollno': key, **student_data[key]}
+            
+            # Check if student has reached the 4-book limit
+            student_books_count = issued_books.count_documents({
+                'student.rollno': key,
+                'status': 'issued'
+            })
+            
+            if student_books_count >= 4:
+                show_limit_popup = True
         else:
             error = f"No data found for roll number: {key}"
-    return render_template('index.html', result=result, error=error)
+    
+    return render_template('index.html', result=result, error=error, student_books_count=student_books_count, show_limit_popup=show_limit_popup)
 
 @app.route('/view-books')
 def view_books():
@@ -214,6 +227,7 @@ def view_books():
     barcode_result = None
     barcode_searched = None
     already_issued = None
+    student_books_count = None
 
     try:
         if barcode:
@@ -231,6 +245,14 @@ def view_books():
             else:
                 barcode_searched = barcode
 
+        # Get student info from session to show current book count
+        student = session.get('student')
+        if student:
+            student_books_count = issued_books.count_documents({
+                'student.rollno': student['rollno'],
+                'status': 'issued'
+            })
+
     except Exception as e:
         logger.error("Error in view_books route: %s", e)
 
@@ -241,12 +263,17 @@ def view_books():
     except Exception as e:
         logger.error("Error fetching books: %s", e)
 
+    # Get error message from session if exists
+    book_limit_error = session.pop('book_limit_error', None)
+    
     return render_template(
         'view_books.html',
         
         barcode_result=barcode_result,
         barcode_searched=barcode_searched,
-        already_issued=already_issued
+        already_issued=already_issued,
+        book_limit_error=book_limit_error,
+        student_books_count=student_books_count
     )
 
 @app.route('/Save')
@@ -255,6 +282,17 @@ def Save_To_DB():
     barcode_result = session.get('book')
     if not student or not barcode_result:
         return "Missing student or book information", 400
+
+    # Check if student already has 4 books issued
+    student_issued_books = issued_books.count_documents({
+        'student.rollno': student['rollno'],
+        'status': 'issued'
+    })
+    
+    if student_issued_books >= 4:
+        # Store error message in session for popup
+        session['book_limit_error'] = f"Student {student['studentName']} (Roll No: {student['rollno']}) has already reached the maximum limit of 4 books. Please return some books before issuing new ones."
+        return redirect(url_for('view_books'))
 
     issued_doc = {
         'student': student,
@@ -266,6 +304,8 @@ def Save_To_DB():
     try:
         issued_books.insert_one(issued_doc)
         logger.info("Book issued successfully!")
+        # Clear any previous error messages
+        session.pop('book_limit_error', None)
     except Exception as e:
         logger.error("Error while issuing book: %s", e)
         return "Error issuing book", 500
