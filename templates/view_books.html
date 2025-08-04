@@ -59,6 +59,21 @@
         class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded transition">Search</button>
     </form>
 
+    <!-- Student Book Count Display -->
+    {% if student_books_count is not none %}
+    <div class="mb-4 p-3 bg-yellow-50 border-l-4 border-yellow-500 rounded text-sm">
+      <strong>Current Book Status:</strong><br>
+      Books currently issued: <b>{{ student_books_count }}/4</b>
+      {% if student_books_count >= 4 %}
+        <span class="text-red-600 font-bold"> (Limit reached!)</span>
+      {% elif student_books_count >= 3 %}
+        <span class="text-orange-600 font-bold"> (1 book remaining)</span>
+      {% else %}
+        <span class="text-green-600 font-bold"> ({{ 4 - student_books_count }} books remaining)</span>
+      {% endif %}
+    </div>
+    {% endif %}
+
     <!-- Result -->
     {% if barcode_result %}
     <div class="mb-3 p-3 bg-blue-50 border-l-4 border-blue-500 rounded text-sm">
@@ -71,6 +86,32 @@
       Barcode: <b>{{ barcode_result.barcode }}</b>
     </div>
 
+    <!-- Book Limit Error Popup -->
+    {% if book_limit_error %}
+    <div id="errorPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl">
+        <div class="flex items-center mb-4">
+          <div class="flex-shrink-0">
+            <svg class="h-8 w-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-lg font-medium text-gray-900">Book Limit Exceeded!</h3>
+          </div>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-600">{{ book_limit_error }}</p>
+        </div>
+        <div class="flex justify-end">
+          <button onclick="closeErrorPopup()" class="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
     {% if already_issued %}
     <div class="mb-3 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded text-sm">
       ⚠️ This book is already issued to:
@@ -80,15 +121,27 @@
     </div>
     {% else %}
     <div class="text-center my-2">
-      <a href="{{ url_for('Save_To_DB') }}"
-        class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-medium px-4 py-2 rounded shadow transform hover:scale-105 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-          stroke="currentColor" class="w-4 h-4">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M12 6c-2.25-1.5-4.75-1.5-7 0v12c2.25-1.5 4.75-1.5 7 0m0-12c2.25-1.5 4.75-1.5 7 0v7M17 17h4m-2-2v4" />
-        </svg>
-        Issue Book
-      </a>
+      {% if student_books_count and student_books_count >= 4 %}
+        <button disabled
+          class="inline-flex items-center gap-2 bg-gray-400 text-gray-600 font-medium px-4 py-2 rounded shadow cursor-not-allowed">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 6c-2.25-1.5-4.75-1.5-7 0v12c2.25-1.5 4.75-1.5 7 0m0-12c2.25-1.5 4.75-1.5 7 0v7M17 17h4m-2-2v4" />
+          </svg>
+          Issue Book (Limit Reached)
+        </button>
+      {% else %}
+        <a href="{{ url_for('Save_To_DB') }}"
+          class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-medium px-4 py-2 rounded shadow transform hover:scale-105 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 6c-2.25-1.5-4.75-1.5-7 0v12c2.25-1.5 4.75-1.5 7 0m0-12c2.25-1.5 4.75-1.5 7 0v7M17 17h4m-2-2v4" />
+          </svg>
+          Issue Book
+        </a>
+      {% endif %}
     </div>
     {% endif %}
 
@@ -104,6 +157,22 @@
   </div>
 </main>
 
+<script>
+function closeErrorPopup() {
+  const popup = document.getElementById('errorPopup');
+  if (popup) {
+    popup.style.display = 'none';
+  }
+}
+
+// Close popup when clicking outside of it
+document.addEventListener('click', function(event) {
+  const popup = document.getElementById('errorPopup');
+  if (popup && event.target === popup) {
+    popup.style.display = 'none';
+  }
+});
+</script>
 
 </body>
 </html>
