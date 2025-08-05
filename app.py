@@ -1,12 +1,14 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for, session, flash, send_file
+import io
+from flask import Flask, jsonify, make_response, render_template, request, redirect, url_for, session, flash, send_file
 import json
 import logging
+from openpyxl import Workbook
 import pandas as pd
 from bson import ObjectId
 from DB.connection import db
 from datetime import datetime
 # Uncomment this line if you want to import books from an Excel file, white initial setup of the application
-import services.import_books_from_excel 
+#import services.import_books_from_excel 
 from services import Read_DepartmentCodes
 import os
 import uuid
@@ -707,6 +709,124 @@ def delete_book(accession_number):
 def delete_book_success(accession_number):
     flash("Book deleted successfully.", "success")
     return redirect(url_for("all_books"))
+
+@app.route('/single-date-report', methods=['GET', 'POST'])
+def single_date_report():
+    report_data = None
+    selected_date = None
+    if request.method == 'POST':
+        selected_date = request.form.get('report_date')
+        if selected_date:
+            # Find all issued_books with issued_at matching selected_date
+            report_data = list(issued_books.find({
+                'issued_at': {'$regex': f'^{selected_date}'}
+            }))
+    return render_template('single_date_report.html', report_data=report_data, selected_date=selected_date)
+
+# Download Excel for Single Date Report
+@app.route('/download-single-date-report', methods=['POST'])
+def download_single_date_report():
+    selected_date = request.form.get('report_date')
+    if not selected_date:
+        flash('No date selected', 'error')
+        return redirect(url_for('single_date_report'))
+    report_data = list(issued_books.find({
+        'issued_at': {'$regex': f'^{selected_date}'}
+    }))
+    wb = Workbook()
+    ws = wb.active
+    ws.title = 'Single Date Report'
+    headers = ['Student Name', 'Roll No', 'Class', 'Book Title', 'Author', 'Department', 'Barcode', 'Issued Date', 'Status']
+    ws.append(headers)
+    for book in report_data:
+        ws.append([
+            book['student'].get('studentName', ''),
+            book['student'].get('rollno', ''),
+            book['student'].get('section', ''),
+            book['book'].get('title', ''),
+            book['book'].get('author', ''),
+            book['book'].get('department', ''),
+            book['book'].get('barcode', ''),
+            book.get('issued_at', ''),
+            book.get('status', '')
+        ])
+    for col in ws.columns:
+        max_length = 0
+        for cell in col:
+            if cell.value:
+                max_length = max(max_length, len(str(cell.value)))
+        ws.column_dimensions[col[0].column_letter].width = max_length + 2
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+    response = make_response(output.read())
+    response.headers["Content-Disposition"] = f"attachment; filename=Single_Date_Report_{selected_date}.xlsx"
+    response.headers["Content-type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    return response
+
+# Range Date Report Page
+@app.route('/range-date-report', methods=['GET', 'POST'])
+def range_date_report():
+    report_data = None
+    start_date = None
+    end_date = None
+    if request.method == 'POST':
+        start_date = request.form.get('start_date')
+        end_date = request.form.get('end_date')
+        if start_date and end_date:
+            # Find all issued_books with issued_at between start_date and end_date (inclusive)
+            report_data = list(issued_books.find({
+                'issued_at': {
+                    '$gte': start_date,
+                    '$lte': end_date + ' 23:59:59'
+                }
+            }))
+    return render_template('range_date_report.html', report_data=report_data, start_date=start_date, end_date=end_date)
+
+# Download Excel for Range Date Report
+@app.route('/download-range-date-report', methods=['POST'])
+def download_range_date_report():
+    start_date = request.form.get('start_date')
+    end_date = request.form.get('end_date')
+    if not start_date or not end_date:
+        flash('Start and end date required', 'error')
+        return redirect(url_for('range_date_report'))
+    report_data = list(issued_books.find({
+        'issued_at': {
+            '$gte': start_date,
+            '$lte': end_date + ' 23:59:59'
+        }
+    }))
+    wb = Workbook()
+    ws = wb.active
+    ws.title = 'Date Range Report'
+    headers = ['Student Name', 'Roll No', 'Class', 'Book Title', 'Author', 'Department', 'Barcode', 'Issued Date', 'Status']
+    ws.append(headers)
+    for book in report_data:
+        ws.append([
+            book['student'].get('studentName', ''),
+            book['student'].get('rollno', ''),
+            book['student'].get('section', ''),
+            book['book'].get('title', ''),
+            book['book'].get('author', ''),
+            book['book'].get('department', ''),
+            book['book'].get('barcode', ''),
+            book.get('issued_at', ''),
+            book.get('status', '')
+        ])
+    for col in ws.columns:
+        max_length = 0
+        for cell in col:
+            if cell.value:
+                max_length = max(max_length, len(str(cell.value)))
+        ws.column_dimensions[col[0].column_letter].width = max_length + 2
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+    response = make_response(output.read())
+    response.headers["Content-Disposition"] = f"attachment; filename=Date_Range_Report_{start_date}_to_{end_date}.xlsx"
+    response.headers["Content-type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    return response
 
 
 if __name__ == '__main__':

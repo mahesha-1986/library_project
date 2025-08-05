@@ -71,6 +71,52 @@ tr:hover .delete-icon { display: inline-block; }
   <span>Books Statistics</span>
 </a>
 
+<!-- Download Report Button -->
+<div class="inline-block ml-2">
+  <button 
+    onclick="openReportModal()" 
+    class="inline-flex items-center gap-2 px-5 py-3 rounded-xl shadow-md bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-semibold transition-transform transform hover:scale-105">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    <span>Download Report</span>
+  </button>
+</div>
+
+<!-- Modal for report options -->
+<div id="reportModal" class="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <div id="modalContent" class="bg-white/90 rounded-2xl shadow-2xl p-6 w-80 transform scale-95 opacity-0 transition-all duration-300">
+    <!-- Header -->
+    <h2 class="text-xl font-bold mb-4 text-gray-800 text-center">📑 Select Report Type</h2>
+    
+    <!-- Report Options -->
+    <div class="flex flex-col gap-3">
+      <a href="{{ url_for('single_date_report') }}" 
+         class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow transition-transform transform hover:scale-105">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-4 0v10" />
+        </svg>
+        Single Date Report
+      </a>
+      
+      <a href="{{ url_for('range_date_report') }}" 
+         class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow transition-transform transform hover:scale-105">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        Date Range Report
+      </a>
+    </div>
+
+    <!-- Cancel Button -->
+    <button 
+      onclick="closeReportModal()" 
+      class="mt-6 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-lg transition-all hover:scale-105">
+      Cancel
+    </button>
+  </div>
+</div>
+
 
 
 <div class="max-w-7xl mx-auto px-4">
@@ -267,6 +313,29 @@ tr:hover .delete-icon { display: inline-block; }
     
     }
   }
+ 
+  const modal = document.getElementById('reportModal');
+  const modalContent = document.getElementById('modalContent');
+
+  function openReportModal() {
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+      modalContent.classList.remove('scale-95', 'opacity-0');
+      modalContent.classList.add('scale-100', 'opacity-100');
+    }, 10);
+  }
+
+  function closeReportModal() {
+    modalContent.classList.add('scale-95', 'opacity-0');
+    modalContent.classList.remove('scale-100', 'opacity-100');
+    setTimeout(() => modal.classList.add('hidden'), 300);
+  }
+
+  // Close modal when clicking outside
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeReportModal();
+  });
+
 </script>
 
 </main>
