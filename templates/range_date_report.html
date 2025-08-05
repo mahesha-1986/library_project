@@ -72,6 +72,7 @@
             <th class="px-2 py-2 whitespace-nowrap">Department</th>
             <th class="px-2 py-2 whitespace-nowrap">Barcode</th>
             <th class="px-2 py-2 whitespace-nowrap">Issued Date</th>
+            <th class="px-2 py-2 whitespace-nowrap">Returned Date</th>
             <th class="px-2 py-2 whitespace-nowrap">Status</th>
           </tr>
         </thead>
@@ -87,6 +88,7 @@
             <td class="px-2 py-2">{{ book.book.department }}</td>
             <td class="px-2 py-2">{{ book.book.barcode }}</td>
             <td class="px-2 py-2">{{ book.issued_at }}</td>
+            <td class="px-2 py-2">{{ book.returned_at if book.returned_at else 'N/A' }}</td>
             <td class="px-2 py-2">{{ book.status }}</td>
           </tr>
           {% endfor %}

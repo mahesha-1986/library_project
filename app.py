@@ -736,7 +736,7 @@ def download_single_date_report():
     wb = Workbook()
     ws = wb.active
     ws.title = 'Single Date Report'
-    headers = ['Student Name', 'Roll No', 'Class', 'Book Title', 'Author', 'Department', 'Barcode', 'Issued Date', 'Status']
+    headers = ['Student Name', 'Roll No', 'Class', 'Book Title', 'Author', 'Department', 'Barcode', 'Issued Date', 'Returned Date', 'Status']
     ws.append(headers)
     for book in report_data:
         ws.append([
@@ -748,6 +748,7 @@ def download_single_date_report():
             book['book'].get('department', ''),
             book['book'].get('barcode', ''),
             book.get('issued_at', ''),
+            book.get('returned_at', ''),
             book.get('status', '')
         ])
     for col in ws.columns:
