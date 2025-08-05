@@ -129,7 +129,7 @@ def clear_history():
     try:
         # Get all issued books history before clearing
         all_issued_books = list(issued_books.find())
-        print("all_issued_books", all_issued_books)
+        
         if all_issued_books:
             # Extract date range from database records
             from datetime import datetime
@@ -212,8 +212,8 @@ def clear_history():
                 ws.cell(row=row_idx, column=4, value=book.get('book', {}).get('title', ''))
                 ws.cell(row=row_idx, column=5, value=book.get('book', {}).get('author', ''))
                 ws.cell(row=row_idx, column=6, value=book.get('book', {}).get('barcode', ''))
-                ws.cell(row=row_idx, column=7, value=book.get('book', {}).get('department', ''))
-                ws.cell(row=row_idx, column=8, value=book.get('status', ''))
+                ws.cell(row=row_idx, column=7, value=book.get('book', {}).get('department','').upper())
+                ws.cell(row=row_idx, column=8, value=book.get('status', '').upper())
                 ws.cell(row=row_idx, column=9, value=book.get('issued_at', ''))
                 ws.cell(row=row_idx, column=10, value=book.get('returned_at', ''))
                 ws.cell(row=row_idx, column=11, value=fileCreated)
@@ -381,6 +381,19 @@ def download_deleted_data(filename):
     except Exception as e:
         flash(f'Error downloading file: {str(e)}', 'error')
         return redirect(url_for('deleted_data'))
+
+@app.route('/delete_deleted_data/<filename>', methods=['POST'])
+def delete_deleted_data(filename):
+    try:
+        file_path = os.path.join('static/clear_history_excel', filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            flash(f'File "{filename}" deleted successfully!', 'success')
+        else:
+            flash('File not found', 'error')
+    except Exception as e:
+        flash(f'Error deleting file: {str(e)}', 'error')
+    return redirect(url_for('deleted_data'))
 
 @app.route("/recommendation")
 def recommendation():
@@ -678,7 +691,7 @@ def delete_book(accession_number):
         
         # If we found the book with the original accession number, delete it
         result = books_collection.delete_one({"accession_number": accession_number})
-        print("Delete result:", result)
+        
         if result.deleted_count > 0:
             # Set flash message for success
             flash(f"Book with accession number {accession_number} deleted successfully!", "success")
