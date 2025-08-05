@@ -6,7 +6,7 @@ from bson import ObjectId
 from DB.connection import db
 from datetime import datetime
 # Uncomment this line if you want to import books from an Excel file, white initial setup of the application
-#import services.import_books_from_excel 
+import services.import_books_from_excel 
 from services import Read_DepartmentCodes
 import os
 import uuid
