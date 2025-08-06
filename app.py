@@ -745,11 +745,11 @@ def download_single_date_report():
             book['student'].get('section', ''),
             book['book'].get('title', ''),
             book['book'].get('author', ''),
-            book['book'].get('department', ''),
+            book['book'].get('department', '').upper(),
             book['book'].get('barcode', ''),
             book.get('issued_at', ''),
             book.get('returned_at', ''),
-            book.get('status', '')
+            book.get('status', '').upper()
         ])
     for col in ws.columns:
         max_length = 0
@@ -810,10 +810,11 @@ def download_range_date_report():
             book['student'].get('section', ''),
             book['book'].get('title', ''),
             book['book'].get('author', ''),
-            book['book'].get('department', ''),
+            book['book'].get('department', '').upper(),
             book['book'].get('barcode', ''),
             book.get('issued_at', ''),
-            book.get('status', '')
+            book.get('returned_at', ''),
+            book.get('status', '').upper()
         ])
     for col in ws.columns:
         max_length = 0
