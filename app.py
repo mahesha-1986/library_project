@@ -751,12 +751,31 @@ def download_single_date_report():
             book.get('returned_at', ''),
             book.get('status', '').upper()
         ])
-    for col in ws.columns:
+    # Set page setup for A4 and fit to width for printing
+    ws.page_setup.paperSize = 9  # 9 is A4 in openpyxl
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 0
+    ws.sheet_view.zoomScale = 100
+    ws.sheet_view.rightToLeft = False
+    for idx, col in enumerate(ws.columns, 1):
         max_length = 0
         for cell in col:
             if cell.value:
                 max_length = max(max_length, len(str(cell.value)))
-        ws.column_dimensions[col[0].column_letter].width = max_length + 2
+            # Prevent wrapping for Barcode column (7th)
+            if idx == 7:
+                cell.alignment = cell.alignment.copy(wrap_text=False)
+            else:
+                cell.alignment = cell.alignment.copy(wrap_text=True)
+        # Book Title column (4th) set to a reasonable fixed width
+        if idx == 4:
+            width = 20
+        # Barcode column (7th), set width to exactly max_length + 2
+        elif idx == 7:
+            width = max_length + 2
+        else:
+            width = min(max_length + 2, 40)
+        ws.column_dimensions[col[0].column_letter].width = width
     output = io.BytesIO()
     wb.save(output)
     output.seek(0)
@@ -801,7 +820,7 @@ def download_range_date_report():
     wb = Workbook()
     ws = wb.active
     ws.title = 'Date Range Report'
-    headers = ['Student Name', 'Roll No', 'Class', 'Book Title', 'Author', 'Department', 'Barcode', 'Issued Date', 'Status']
+    headers = ['Student Name', 'Roll No', 'Class', 'Book Title', 'Author', 'Department', 'Barcode', 'Issued Date', 'Returned Date', 'Status']
     ws.append(headers)
     for book in report_data:
         ws.append([
@@ -816,12 +835,23 @@ def download_range_date_report():
             book.get('returned_at', ''),
             book.get('status', '').upper()
         ])
-    for col in ws.columns:
-        max_length = 0
+    # Set page setup for A4 and fit to width for printing
+    ws.page_setup.paperSize = 9  # 9 is A4 in openpyxl
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 0
+    ws.sheet_view.zoomScale = 100
+    ws.sheet_view.rightToLeft = False
+    # Fixed column widths as per your screenshot
+    fixed_widths = [18, 12, 14, 24, 18, 18, 16, 20, 20, 10]
+    for idx, col in enumerate(ws.columns, 1):
         for cell in col:
-            if cell.value:
-                max_length = max(max_length, len(str(cell.value)))
-        ws.column_dimensions[col[0].column_letter].width = max_length + 2
+            # Prevent wrapping for Roll No (2nd) and Barcode (7th)
+            if idx == 2 or idx == 7:
+                cell.alignment = cell.alignment.copy(wrap_text=False)
+            else:
+                cell.alignment = cell.alignment.copy(wrap_text=True)
+        if idx <= len(fixed_widths):
+            ws.column_dimensions[col[0].column_letter].width = fixed_widths[idx-1]
     output = io.BytesIO()
     wb.save(output)
     output.seek(0)

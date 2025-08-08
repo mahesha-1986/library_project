@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-  <div class="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg" style="background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);">
+  <div class="w-full max-w-[98vw] mx-auto mt-6 p-2 md:p-4 bg-white rounded-lg shadow-lg" style="background: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);">
     
     <!-- College Header -->
     <div class="flex flex-col md:flex-row items-center gap-4 border-b border-gray-300 pb-4 mb-6">
@@ -57,8 +57,8 @@
     
     <!-- Report Table -->
     {% if report_data %}
-    <div class="w-full relative" id="tableScrollContainer" style="overflow: hidden;">
-      <table class="min-w-full table-fixed border border-gray-300 rounded text-xs md:text-sm bg-white shadow-md" style="user-select:none;">
+    <div class="w-full relative">
+      <table class="w-full border border-gray-300 rounded text-xs md:text-sm bg-white shadow-md" style="user-select:none;">
         <thead class="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
           <tr>
             <th class="px-2 py-2 whitespace-nowrap">S.No</th>
@@ -87,41 +87,12 @@
             <td class="px-2 py-2">{{ book.book.barcode }}</td>
             <td class="px-2 py-2">{{ book.issued_at }}</td>
             <td class="px-2 py-2">{{ book.returned_at if book.returned_at else 'N/A' }}</td>
-            <td class="px-2 py-2">{{ book.status }}</td>
+            <td class="px-2 py-2 uppercase">{{ book.status }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-    
-    <!-- Horizontal Drag Scroll -->
-    <script>
-      const tableContainer = document.getElementById('tableScrollContainer');
-      let isDown = false;
-      let startX;
-      let scrollLeft;
-      tableContainer.addEventListener('mousedown', (e) => {
-        isDown = true;
-        tableContainer.classList.add('cursor-grabbing');
-        startX = e.pageX - tableContainer.offsetLeft;
-        scrollLeft = tableContainer.scrollLeft;
-      });
-      tableContainer.addEventListener('mouseleave', () => {
-        isDown = false;
-        tableContainer.classList.remove('cursor-grabbing');
-      });
-      tableContainer.addEventListener('mouseup', () => {
-        isDown = false;
-        tableContainer.classList.remove('cursor-grabbing');
-      });
-      tableContainer.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - tableContainer.offsetLeft;
-        const walk = (x - startX) * 1.5;
-        tableContainer.scrollLeft = scrollLeft - walk;
-      });
-    </script>
     
     {% elif selected_date %}
       <div class="text-center text-gray-500 mt-6">No records found for {{ selected_date }}.</div>
