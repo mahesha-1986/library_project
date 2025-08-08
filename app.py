@@ -449,11 +449,16 @@ def all_books():
     try:
         departments = Read_DepartmentCodes()
         books_cursor = books_collection.find()
-        books = [{**book, '_id': str(book['_id'])} for book in books_cursor]
+
+        # Sort after converting accession_number to int
+        books = sorted(
+            [{**book, '_id': str(book['_id'])} for book in books_cursor],
+            key=lambda x: int(x['accession_number'])
+        )
 
         for book in books:
             book_history = issued_books.find_one({'book.barcode': book['barcode'], 'status': 'issued'})
-           
+
             if not book_history:
                 book['status'] = 'available'
             else:
@@ -464,6 +469,7 @@ def all_books():
     except Exception as e:
         logger.error("Error fetching books: %s", e)
         return "Error fetching books", 500
+
     return render_template("all_books.html", Books=books, departments=departments, Book_Count=len(books))
 
 
